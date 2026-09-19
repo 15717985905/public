@@ -61,11 +61,19 @@ for skill in skills:
             raise SystemExit(f"skill invocation needs a result contract: {skill_id}")
     source = skill.get("source", {})
     if source.get("type") == "workspace":
+        if not source.get("path"):
+            raise SystemExit(f"workspace skill needs a path: {skill_id}")
         source_path = (root / source["path"]).resolve()
         if not source_path.is_dir():
             raise SystemExit(f"workspace skill path does not exist: {source_path}")
         if not (source_path / "SKILL.md").is_file():
             raise SystemExit(f"workspace skill has no SKILL.md: {source_path}")
+    elif source.get("type") == "git":
+        for field in ("repository", "ref", "commit"):
+            if not source.get(field):
+                raise SystemExit(f"git skill source needs {field}: {skill_id}")
+    else:
+        raise SystemExit(f"unsupported skill source type: {skill_id}")
 
 skill_text = (root / "skills/public/SKILL.md").read_text(encoding="utf-8")
 if not skill_text.startswith("---\n") or "name: public\n" not in skill_text:

@@ -20,7 +20,7 @@
           "status": {"enum": ["development", "stable", "deprecated"]},
           "source": {
             "type": "object",
-            "required": ["type", "path"],
+            "required": ["type"],
             "additionalProperties": false,
             "properties": {
               "type": {"enum": ["workspace", "git"]},

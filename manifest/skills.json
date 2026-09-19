@@ -5,11 +5,13 @@
   "skills": [
     {
       "id": "public-wechat",
-      "version": "0.1.0-dev",
-      "status": "development",
+      "version": "0.1.0",
+      "status": "stable",
       "source": {
-        "type": "workspace",
-        "path": "../public-wechat"
+        "type": "git",
+        "repository": "https://github.com/15717985905/public-wechat",
+        "ref": "v0.1.0",
+        "commit": "81ffd0c18d03123cdbca99bd4c594d844f5c3998"
       },
       "capabilities": [
         "research-result-promotion",
