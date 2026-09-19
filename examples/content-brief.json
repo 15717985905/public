@@ -1,0 +1,52 @@
+{
+  "id": "example-task-001",
+  "content_type": "research_result",
+  "objective": "explanation",
+  "audience": {
+    "primary": "对研究结果感兴趣的普通读者",
+    "language": "zh-CN",
+    "tone": "clear-and-careful"
+  },
+  "sources": [
+    {
+      "id": "source-1",
+      "type": "document",
+      "title": "用户提供的研究材料",
+      "locator": "document page 1",
+      "rights": "review_required"
+    }
+  ],
+  "claims": [
+    {
+      "id": "claim-1",
+      "text": "示例声明，必须由来源支持。",
+      "source_ids": ["source-1"],
+      "verification": "verified"
+    }
+  ],
+  "key_messages": ["只保留已经核实的核心信息。"],
+  "brand_voice": "academic-communication",
+  "materials": [
+    {
+      "id": "material-1",
+      "type": "paper_pdf",
+      "locator": "user-provided/paper.pdf",
+      "role": "primary_source"
+    },
+    {
+      "id": "material-2",
+      "type": "author_profile",
+      "locator": "user-provided/author-profile.json",
+      "role": "corresponding_author"
+    }
+  ],
+  "author_profile": {},
+  "platforms": ["wechat"],
+  "constraints": ["不自动发布", "需要人工终审"],
+  "assets": [],
+  "review": {
+    "fact_check_passed": true,
+    "requires_human_review": true,
+    "notes": "示例，不用于正式发布。"
+  }
+}

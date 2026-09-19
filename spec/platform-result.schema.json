@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://public.local/spec/platform-result.schema.json",
+  "title": "Public Platform Result",
+  "type": "object",
+  "required": ["task_id", "skill", "platform", "status", "outputs", "review"],
+  "additionalProperties": false,
+  "properties": {
+    "task_id": {"type": "string"},
+    "skill": {"type": "string"},
+    "platform": {"type": "string"},
+    "status": {"enum": ["draft", "needs_review", "approved", "failed"]},
+    "outputs": {
+      "type": "object",
+      "required": ["files"],
+      "additionalProperties": false,
+      "properties": {
+        "files": {"type": "array", "items": {"type": "string"}},
+        "primary": {"type": "string"}
+      }
+    },
+    "review": {
+      "type": "object",
+      "required": ["fact_check_passed", "human_approval_required"],
+      "additionalProperties": false,
+      "properties": {
+        "fact_check_passed": {"type": "boolean"},
+        "human_approval_required": {"type": "boolean"},
+        "human_approved": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    },
+    "error": {"type": "string"}
+  }
+}

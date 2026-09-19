@@ -1,0 +1,90 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://public.local/spec/content-brief.schema.json",
+  "title": "Public Content Brief",
+  "type": "object",
+  "required": ["id", "content_type", "objective", "audience", "sources", "claims", "key_messages", "platforms"],
+  "additionalProperties": false,
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "content_type": {
+      "type": "string",
+      "enum": ["research_result", "product", "brand", "event", "recruitment", "personal_brand"]
+    },
+    "objective": {
+      "type": "string",
+      "enum": ["awareness", "explanation", "trust", "conversion", "recruitment", "launch", "reputation"]
+    },
+    "audience": {
+      "type": "object",
+      "required": ["primary"],
+      "additionalProperties": false,
+      "properties": {
+        "primary": {"type": "string", "minLength": 1},
+        "secondary": {"type": "array", "items": {"type": "string"}},
+        "language": {"type": "string"},
+        "tone": {"type": "string"}
+      }
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "title"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"enum": ["document", "url", "data", "quote", "user_input"]},
+          "title": {"type": "string"},
+          "locator": {"type": "string"},
+          "retrieved_at": {"type": "string"},
+          "rights": {"type": "string"}
+        }
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "source_ids", "verification"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "text": {"type": "string"},
+          "source_ids": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "verification": {"enum": ["verified", "partially_verified", "unverified", "rejected"]},
+          "note": {"type": "string"}
+        }
+      }
+    },
+    "key_messages": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+    "brand_voice": {"type": "string"},
+    "materials": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "locator"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string"},
+          "type": {"enum": ["paper_pdf", "author_profile", "image", "document", "data"]},
+          "locator": {"type": "string"},
+          "role": {"type": "string"}
+        }
+      }
+    },
+    "author_profile": {"type": "object"},
+    "platforms": {"type": "array", "items": {"type": "string"}, "minItems": 1, "uniqueItems": true},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "assets": {"type": "array", "items": {"type": "string"}},
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fact_check_passed": {"type": "boolean"},
+        "requires_human_review": {"type": "boolean"},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+
+python3 - "$ROOT_DIR" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+required = [
+    "README.md",
+    "AGENTS.md",
+    "PROJECT-DEVELOPMENT-ZEN.md",
+    "CHANGELOG.md",
+    "manifest/skills.json",
+    "spec/content-brief.schema.json",
+    "spec/platform-result.schema.json",
+    "spec/skill-manifest.schema.json",
+    "skills/public/SKILL.md",
+    "examples/content-brief.json",
+]
+
+for relative in required:
+    path = root / relative
+    if not path.is_file():
+        raise SystemExit(f"missing required file: {relative}")
+
+def load_json(relative):
+    path = root / relative
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"invalid JSON in {relative}: {exc}") from exc
+
+manifest = load_json("manifest/skills.json")
+brief = load_json("examples/content-brief.json")
+for field in ("id", "content_type", "objective", "audience", "sources", "claims", "key_messages", "platforms"):
+    if field not in brief:
+        raise SystemExit(f"example content brief is missing: {field}")
+if manifest.get("project") != "public":
+    raise SystemExit("manifest project must be public")
+
+skills = manifest.get("skills")
+if not isinstance(skills, list) or not skills:
+    raise SystemExit("manifest must contain at least one skill")
+
+ids = []
+for skill in skills:
+    skill_id = skill.get("id")
+    if not skill_id or skill_id in ids:
+        raise SystemExit(f"duplicate or missing skill id: {skill_id}")
+    ids.append(skill_id)
+    invocation = skill.get("invocation")
+    if invocation is not None:
+        if invocation.get("input_mode") == "native_plus_brief" and not invocation.get("required_inputs"):
+            raise SystemExit(f"native_plus_brief skill needs required_inputs: {skill_id}")
+        if not invocation.get("result"):
+            raise SystemExit(f"skill invocation needs a result contract: {skill_id}")
+    source = skill.get("source", {})
+    if source.get("type") == "workspace":
+        source_path = (root / source["path"]).resolve()
+        if not source_path.is_dir():
+            raise SystemExit(f"workspace skill path does not exist: {source_path}")
+        if not (source_path / "SKILL.md").is_file():
+            raise SystemExit(f"workspace skill has no SKILL.md: {source_path}")
+
+skill_text = (root / "skills/public/SKILL.md").read_text(encoding="utf-8")
+if not skill_text.startswith("---\n") or "name: public\n" not in skill_text:
+    raise SystemExit("public SKILL.md is missing required frontmatter")
+
+print(f"Verified public project and {len(ids)} registered skill(s).")
+PY
+
+if command -v git >/dev/null 2>&1; then
+  git -C "$ROOT_DIR" diff --check
+fi

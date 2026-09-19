@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://public.local/spec/skill-manifest.schema.json",
+  "title": "Public Skill Manifest",
+  "type": "object",
+  "required": ["manifest_version", "project", "skills"],
+  "additionalProperties": false,
+  "properties": {
+    "manifest_version": {"type": "string"},
+    "project": {"const": "public"},
+    "skills": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "version", "status", "source", "capabilities", "platforms", "input_schema", "output_schema", "requires_human_review"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {"type": "string", "pattern": "^[a-z0-9-]+$"},
+          "version": {"type": "string"},
+          "status": {"enum": ["development", "stable", "deprecated"]},
+          "source": {
+            "type": "object",
+            "required": ["type", "path"],
+            "additionalProperties": false,
+            "properties": {
+              "type": {"enum": ["workspace", "git"]},
+              "path": {"type": "string"},
+              "repository": {"type": "string"},
+              "ref": {"type": "string"},
+              "commit": {"type": "string"}
+            }
+          },
+          "capabilities": {"type": "array", "items": {"type": "string"}},
+          "platforms": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+          "input_schema": {"type": "string"},
+          "output_schema": {"type": "string"},
+          "invocation": {
+            "type": "object",
+            "required": ["mode", "input_mode", "result"],
+            "additionalProperties": false,
+            "properties": {
+              "mode": {"enum": ["agent_skill", "cli", "api"]},
+              "input_mode": {"enum": ["native", "native_plus_brief", "brief_only"]},
+              "required_inputs": {"type": "array", "items": {"type": "string"}},
+              "optional_inputs": {"type": "array", "items": {"type": "string"}},
+              "result": {"type": "string"}
+            }
+          },
+          "requires_human_review": {"type": "boolean"},
+          "dependencies": {"type": "object"}
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "$schema": "../spec/skill-manifest.schema.json",
+  "manifest_version": "0.1.0",
+  "project": "public",
+  "skills": [
+    {
+      "id": "public-wechat",
+      "version": "0.1.0-dev",
+      "status": "development",
+      "source": {
+        "type": "workspace",
+        "path": "../public-wechat"
+      },
+      "capabilities": [
+        "research-result-promotion",
+        "wechat-article-generation",
+        "docx-export",
+        "fact-check-checklist"
+      ],
+      "platforms": ["wechat"],
+      "input_schema": "../spec/content-brief.schema.json",
+      "output_schema": "../spec/platform-result.schema.json",
+      "invocation": {
+        "mode": "agent_skill",
+        "input_mode": "native_plus_brief",
+        "required_inputs": ["paper_pdf", "author_profile"],
+        "optional_inputs": ["content_brief"],
+        "result": "platform-result"
+      },
+      "requires_human_review": true,
+      "dependencies": {
+        "python": ["python-docx"],
+        "system": ["pdfinfo", "pdftotext", "pdftoppm"]
+      }
+    }
+  ]
+}
